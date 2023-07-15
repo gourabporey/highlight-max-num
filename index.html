@@ -24,19 +24,13 @@
         }, timeout);
       };
 
-      const highlightMax = (numbers) => {
-        const max = numbers.reduce((maxNumber, currentNumber) => {
-          return maxNumber.number > currentNumber.number
-            ? maxNumber
-            : currentNumber;
-        });
-
+      const highlightMax = (max) => {
         max.node.classList.add('highlight');
       };
 
-      const collectNumbers = (count, onComplete, numbers) => {
+      const collectNumbers = (count, onComplete, max) => {
         if (count === 0) {
-          onComplete(numbers);
+          onComplete(max);
           return;
         }
 
@@ -44,19 +38,22 @@
           if (isInvalid(number)) return;
 
           const numberElement = createNumberElement(number);
+          const current = { node: numberElement, number: +number };
+
           const numbersContainer = getNumberContainer();
-
           numbersContainer.appendChild(numberElement);
-          numbers.push({ number: +number, node: numberElement });
 
-          collectNumbers(--count, onComplete, numbers);
+          const currentMax = current.number > max.number ? current : max;
+          count = count - 1;
+
+          collectNumbers(count, onComplete, currentMax);
         });
       };
 
       window.onload = () => {
-        const initialNumbers = [];
+        const initialMax = { number: -Infinity };
         const numbersCount = 5;
-        collectNumbers(numbersCount, highlightMax, initialNumbers);
+        collectNumbers(numbersCount, highlightMax, initialMax);
       };
     </script>
   </head>
