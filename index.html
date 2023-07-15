@@ -2,6 +2,12 @@
   <head>
     <title>Maximum number hightlighter</title>
 
+    <style>
+      .highlight {
+        color: green;
+      }
+    </style>
+
     <script>
       const isInvalid = (number) =>
         typeof +number !== 'number' || isNaN(number) || number === null;
@@ -20,7 +26,7 @@
         }, timeout);
       };
 
-      const printMax = () => {
+      const highlightMax = () => {
         const numbersContainer = getNumberContainer();
         const max = Array.from(numbersContainer.children).reduce(
           (maxElement, current) => {
@@ -30,7 +36,7 @@
           }
         );
 
-        console.log(max.textContent);
+        max.classList.add('highlight');
       };
 
       const collectNumbers = (onComplete) => {
@@ -49,14 +55,14 @@
       };
 
       window.onload = () => {
-        collectNumbers(printMax);
+        collectNumbers(highlightMax);
       };
     </script>
   </head>
   <body>
     <main>
       <h2>Numbers</h2>
-      <ol id="numbers"></ol>
+      <ul id="numbers"></ul>
       <div id="highest"></div>
     </main>
   </body>
