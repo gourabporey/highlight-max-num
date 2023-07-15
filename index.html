@@ -26,22 +26,19 @@
         }, timeout);
       };
 
-      const highlightMax = () => {
-        const numbersContainer = getNumberContainer();
-        const max = Array.from(numbersContainer.children).reduce(
-          (maxElement, current) => {
-            return +maxElement.textContent > +current.textContent
-              ? maxElement
-              : current;
-          }
-        );
+      const highlightMax = (numbers) => {
+        const max = numbers.reduce((maxNumber, currentNumber) => {
+          return maxNumber.number > currentNumber.number
+            ? maxNumber
+            : currentNumber;
+        });
 
-        max.classList.add('highlight');
+        max.node.classList.add('highlight');
       };
 
-      const collectNumbers = (onComplete) => {
-        if (getNumberContainer().children.length === 10) {
-          onComplete();
+      const collectNumbers = (onComplete, numbers) => {
+        if (numbers.length === 10) {
+          onComplete(numbers);
           return;
         }
 
@@ -50,12 +47,14 @@
           const numberElement = createNumberElement(number);
           const numbersContainer = getNumberContainer();
           numbersContainer.appendChild(numberElement);
-          collectNumbers(onComplete);
+          numbers.push({ number, node: numberElement });
+          collectNumbers(onComplete, numbers);
         });
       };
 
       window.onload = () => {
-        collectNumbers(highlightMax);
+        const initialNumbers = [];
+        collectNumbers(highlightMax, initialNumbers);
       };
     </script>
   </head>
