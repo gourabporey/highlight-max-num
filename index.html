@@ -20,18 +20,36 @@
         }, timeout);
       };
 
-      const collectNumbers = () => {
+      const printMax = () => {
+        const numbersContainer = getNumberContainer();
+        const max = Array.from(numbersContainer.children).reduce(
+          (maxElement, current) => {
+            return +maxElement.textContent > +current.textContent
+              ? maxElement
+              : current;
+          }
+        );
+
+        console.log(max.textContent);
+      };
+
+      const collectNumbers = (onComplete) => {
+        if (getNumberContainer().children.length === 10) {
+          onComplete();
+          return;
+        }
+
         delayedPrompt('Enter a number', (number) => {
           if (isInvalid(number)) return;
           const numberElement = createNumberElement(number);
           const numbersContainer = getNumberContainer();
           numbersContainer.appendChild(numberElement);
-          collectNumbers();
+          collectNumbers(onComplete);
         });
       };
 
       window.onload = () => {
-        collectNumbers();
+        collectNumbers(printMax);
       };
     </script>
   </head>
