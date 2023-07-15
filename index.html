@@ -2,11 +2,9 @@
   <head>
     <title>Maximum number hightlighter</title>
 
-    <style>
-      .highlight {
-        color: green;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="style.css" />
 
     <script>
       const isInvalid = (number) =>
@@ -36,25 +34,29 @@
         max.node.classList.add('highlight');
       };
 
-      const collectNumbers = (onComplete, numbers) => {
-        if (numbers.length === 10) {
+      const collectNumbers = (count, onComplete, numbers) => {
+        if (count === 0) {
           onComplete(numbers);
           return;
         }
 
         delayedPrompt('Enter a number', (number) => {
           if (isInvalid(number)) return;
+
           const numberElement = createNumberElement(number);
           const numbersContainer = getNumberContainer();
+
           numbersContainer.appendChild(numberElement);
-          numbers.push({ number, node: numberElement });
-          collectNumbers(onComplete, numbers);
+          numbers.push({ number: +number, node: numberElement });
+
+          collectNumbers(--count, onComplete, numbers);
         });
       };
 
       window.onload = () => {
         const initialNumbers = [];
-        collectNumbers(highlightMax, initialNumbers);
+        const numbersCount = 5;
+        collectNumbers(numbersCount, highlightMax, initialNumbers);
       };
     </script>
   </head>
