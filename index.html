@@ -2,7 +2,38 @@
   <head>
     <title>Maximum number hightlighter</title>
 
-    <script></script>
+    <script>
+      const isInvalid = (number) =>
+        typeof +number !== 'number' || isNaN(number) || number === null;
+
+      const createNumberElement = (number) => {
+        const numberElement = document.createElement('li');
+        numberElement.innerText = number;
+        return numberElement;
+      };
+
+      const getNumberContainer = () => document.querySelector('#numbers');
+
+      const delayedPrompt = (msg, cb, timeout = 100) => {
+        setTimeout(() => {
+          cb(prompt('Enter a number'));
+        }, timeout);
+      };
+
+      const collectNumbers = () => {
+        delayedPrompt('Enter a number', (number) => {
+          if (isInvalid(number)) return;
+          const numberElement = createNumberElement(number);
+          const numbersContainer = getNumberContainer();
+          numbersContainer.appendChild(numberElement);
+          collectNumbers();
+        });
+      };
+
+      window.onload = () => {
+        collectNumbers();
+      };
+    </script>
   </head>
   <body>
     <main>
