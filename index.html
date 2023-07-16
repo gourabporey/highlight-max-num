@@ -13,7 +13,7 @@
       const createNumberElement = (number) => {
         const numberElement = document.createElement('li');
         numberElement.innerText = number;
-        return numberElement;
+        return { value: +number, node: numberElement };
       };
 
       const getNumberContainer = () => document.querySelector('#numbers');
@@ -28,30 +28,29 @@
         max.node.classList.add('highlight');
       };
 
-      const collectNumbers = (count, onComplete, max) => {
-        if (count === 0) {
-          onComplete(max);
+      const collectNumbers = (remainingCount, onComplete, maxNum) => {
+        if (remainingCount <= 0) {
+          onComplete(maxNum);
           return;
         }
 
         delayedPrompt('Enter a number', (number) => {
           if (isInvalid(number)) return;
 
-          const numberElement = createNumberElement(number);
-          const current = { node: numberElement, number: +number };
-
+          const current = createNumberElement(number);
           const numbersContainer = getNumberContainer();
-          numbersContainer.appendChild(numberElement);
+          numbersContainer.appendChild(current.node);
 
-          const currentMax = current.number > max.number ? current : max;
-          count = count - 1;
+          const nextMax = current.value > maxNum.value ? current : maxNum;
 
-          collectNumbers(count, onComplete, currentMax);
+          remainingCount--;
+
+          collectNumbers(remainingCount, onComplete, nextMax);
         });
       };
 
       window.onload = () => {
-        const initialMax = { number: -Infinity };
+        const initialMax = createNumberElement(-Infinity);
         const numbersCount = 5;
         collectNumbers(numbersCount, highlightMax, initialMax);
       };
@@ -61,7 +60,6 @@
     <main>
       <h2>Numbers</h2>
       <ul id="numbers"></ul>
-      <div id="highest"></div>
     </main>
   </body>
 </html>
