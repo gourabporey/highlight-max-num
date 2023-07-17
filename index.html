@@ -8,19 +8,19 @@
 
     <script>
       const isInvalid = (number) =>
-        typeof +number !== 'number' || isNaN(number) || number === null;
+        typeof number !== 'number' || isNaN(number) || number === null;
 
       const createNumberElement = (number) => {
-        const numberElement = document.createElement('li');
-        numberElement.innerText = number;
-        return { value: +number, node: numberElement };
+        const numberNode = document.createElement('li');
+        numberNode.innerText = number;
+        return { value: number, node: numberNode };
       };
 
       const getNumberContainer = () => document.querySelector('#numbers');
 
-      const delayedPrompt = (msg, cb, timeout = 100) => {
+      const readNumber = (msg, cb, timeout = 100) => {
         setTimeout(() => {
-          cb(prompt(msg));
+          cb(+prompt(msg));
         }, timeout);
       };
 
@@ -30,13 +30,13 @@
 
       const getElementOfMaxValue = (a, b) => (a.value > b.value ? a : b);
 
-      const collectNumbers = (remainingCount, onComplete, maxNum) => {
+      const collectAndDisplayNumbers = (remainingCount, onComplete, maxNum) => {
         if (remainingCount <= 0) {
           onComplete(maxNum);
           return;
         }
 
-        delayedPrompt('Enter a number', (number) => {
+        readNumber('Enter a number', (number) => {
           if (isInvalid(number)) return;
 
           const numbersContainer = getNumberContainer();
@@ -44,14 +44,14 @@
           const nextMax = getElementOfMaxValue(current, maxNum);
           numbersContainer.appendChild(current.node);
 
-          collectNumbers(remainingCount - 1, onComplete, nextMax);
+          collectAndDisplayNumbers(remainingCount - 1, onComplete, nextMax);
         });
       };
 
       window.onload = () => {
         const initialMax = createNumberElement(-Infinity);
         const numbersCount = 3;
-        collectNumbers(numbersCount, highlightMax, initialMax);
+        collectAndDisplayNumbers(numbersCount, highlightMax, initialMax);
       };
     </script>
   </head>
