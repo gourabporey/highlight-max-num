@@ -39,21 +39,18 @@
         delayedPrompt('Enter a number', (number) => {
           if (isInvalid(number)) return;
 
-          const current = createNumberElement(number);
           const numbersContainer = getNumberContainer();
+          const current = createNumberElement(number);
+          const nextMax = getElementOfMaxValue(current, maxNum);
           numbersContainer.appendChild(current.node);
 
-          const nextMax = getElementOfMaxValue(current, maxNum);
-
-          remainingCount--;
-
-          collectNumbers(remainingCount, onComplete, nextMax);
+          collectNumbers(remainingCount - 1, onComplete, nextMax);
         });
       };
 
       window.onload = () => {
         const initialMax = createNumberElement(-Infinity);
-        const numbersCount = 5;
+        const numbersCount = 3;
         collectNumbers(numbersCount, highlightMax, initialMax);
       };
     </script>
