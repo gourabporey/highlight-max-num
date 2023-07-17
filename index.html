@@ -20,13 +20,15 @@
 
       const delayedPrompt = (msg, cb, timeout = 100) => {
         setTimeout(() => {
-          cb(prompt('Enter a number'));
+          cb(prompt(msg));
         }, timeout);
       };
 
       const highlightMax = (max) => {
         max.node.classList.add('highlight');
       };
+
+      const getElementOfMaxValue = (a, b) => (a.value > b.value ? a : b);
 
       const collectNumbers = (remainingCount, onComplete, maxNum) => {
         if (remainingCount <= 0) {
@@ -41,7 +43,7 @@
           const numbersContainer = getNumberContainer();
           numbersContainer.appendChild(current.node);
 
-          const nextMax = current.value > maxNum.value ? current : maxNum;
+          const nextMax = getElementOfMaxValue(current, maxNum);
 
           remainingCount--;
 
