@@ -24,13 +24,18 @@
         }, timeout);
       };
 
-      const insertInGroup = (numbers, number) => {
-        const isGreaterThanPivot = number > numbers.pivot;
-        const numberGroup = isGreaterThanPivot ? 'greater' : 'lesser';
-        return {
-          ...numbers,
-          [numberGroup]: numbers[numberGroup].concat(number),
+      const insertInGroup = ({ pivot, lesser, greater }, number) => {
+        const numberGroup = number > pivot ? 'greater' : 'lesser';
+
+        const updatedGroups = {
+          pivot,
+          lesser: [...lesser],
+          greater: [...greater],
         };
+
+        updatedGroups[numberGroup].push(number);
+
+        return updatedGroups;
       };
 
       const displayNumberGroup = (header, numbers) => {
