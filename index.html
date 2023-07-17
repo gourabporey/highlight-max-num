@@ -24,28 +24,27 @@
         }, timeout);
       };
 
-      const updateNumbers = (numbers, number) => {
+      const insertInGroup = (numbers, number) => {
         const isGreaterThanPivot = number > numbers.pivot;
         const numberGroup = isGreaterThanPivot ? 'greater' : 'lesser';
         return {
           ...numbers,
-          [numberGroup]: [...numbers[numberGroup], number],
+          [numberGroup]: numbers[numberGroup].concat(number),
         };
       };
 
       const displayNumberGroup = (header, numbers) => {
         if (numbers.length === 0) return;
-        const numberContainer = getNumberContainer();
 
         const groupHeader = document.createElement('h4');
         groupHeader.innerText = header;
-        const groupNumbersContainer = document.createElement('div');
+        const numberNodes = numbers.map(createNumberNode);
 
-        const sortedNumbers = numbers.toSorted((a, b) => a - b);
-        const numberNodes = sortedNumbers.map(createNumberNode);
+        const numberGroupContainer = document.createElement('div');
+        numberGroupContainer.append(groupHeader, ...numberNodes);
 
-        groupNumbersContainer.append(groupHeader, ...numberNodes);
-        numberContainer.appendChild(groupNumbersContainer);
+        const numbersContainer = getNumberContainer();
+        numbersContainer.appendChild(numberGroupContainer);
       };
 
       const clearPage = () => {
@@ -55,11 +54,13 @@
         );
       };
 
+      const sortAscending = (numbers) => numbers.toSorted((a, b) => a - b);
+
       const displayNumbers = (numbers) => {
         const { pivot, greater, lesser } = numbers;
         clearPage();
-        displayNumberGroup(`Numbers <= ${pivot}:`, lesser);
-        displayNumberGroup(`Numbers > ${pivot}:`, greater);
+        displayNumberGroup(`Numbers <= ${pivot}:`, sortAscending(lesser));
+        displayNumberGroup(`Numbers > ${pivot}:`, sortAscending(greater));
       };
 
       const collectAndDisplayNumbers = (remainingCount, numbers) => {
@@ -67,15 +68,18 @@
 
         readNumber('Enter a number', (number) => {
           if (isInvalid(number)) return;
-          const updatedNumbers = updateNumbers(numbers, number);
-          displayNumbers(updatedNumbers);
-          collectAndDisplayNumbers(remainingCount - 1, updatedNumbers);
+
+          const groupedNumbers = insertInGroup(numbers, number);
+          displayNumbers(groupedNumbers);
+
+          collectAndDisplayNumbers(remainingCount - 1, groupedNumbers);
         });
       };
 
       window.onload = () => {
-        const numbersCount = 3;
-        const numbers = { pivot: 6, greater: [], lesser: [] };
+        const numbersCount = +prompt('Enter number of numbers');
+        const pivot = +prompt('Enter the pivot(threshold)');
+        const numbers = { pivot, greater: [], lesser: [] };
         collectAndDisplayNumbers(numbersCount, numbers);
       };
     </script>
