@@ -48,22 +48,22 @@
         numberContainer.appendChild(groupNumbersContainer);
       };
 
-      const displayNumbers = (numbers) => {
-        const { pivot, greater, lesser } = numbers;
+      const clearPage = () => {
         const numberContainer = getNumberContainer();
-
         [...numberContainer.children].forEach((child) =>
           numberContainer.removeChild(child)
         );
+      };
 
-        displayNumberGroup(`Numbers <= ${pivot}: `, lesser);
-        displayNumberGroup(`Numbers > ${pivot}: `, greater);
+      const displayNumbers = (numbers) => {
+        const { pivot, greater, lesser } = numbers;
+        clearPage();
+        displayNumberGroup(`Numbers <= ${pivot}:`, lesser);
+        displayNumberGroup(`Numbers > ${pivot}:`, greater);
       };
 
       const collectAndDisplayNumbers = (remainingCount, numbers) => {
-        if (remainingCount <= 0) {
-          return;
-        }
+        if (remainingCount <= 0) return;
 
         readNumber('Enter a number', (number) => {
           if (isInvalid(number)) return;
@@ -75,11 +75,7 @@
 
       window.onload = () => {
         const numbersCount = 3;
-        const numbers = {
-          pivot: 6,
-          greater: [],
-          lesser: [],
-        };
+        const numbers = { pivot: 6, greater: [], lesser: [] };
         collectAndDisplayNumbers(numbersCount, numbers);
       };
     </script>
