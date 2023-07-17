@@ -38,23 +38,34 @@
         return updatedGroups;
       };
 
-      const displayNumberGroup = (header, numbers) => {
+      const createHeaderNode = (headerText) => {
+        const headerNode = document.createElement('h4');
+        headerNode.innerText = headerText;
+        return headerNode;
+      };
+
+      const createGroupContainer = (headerText, numbers) => {
+        const headerNode = createHeaderNode(headerText);
+        const numberNodes = numbers.map(createNumberNode);
+        const numberGroupContainer = document.createElement('div');
+
+        numberGroupContainer.append(headerNode, ...numberNodes);
+
+        return numberGroupContainer;
+      };
+
+      const displayNumberGroup = (headerText, numbers) => {
         if (numbers.length === 0) return;
 
-        const groupHeader = document.createElement('h4');
-        groupHeader.innerText = header;
-        const numberNodes = numbers.map(createNumberNode);
-
-        const numberGroupContainer = document.createElement('div');
-        numberGroupContainer.append(groupHeader, ...numberNodes);
-
+        const numberGroupContainer = createGroupContainer(headerText, numbers);
         const numbersContainer = getNumberContainer();
+
         numbersContainer.appendChild(numberGroupContainer);
       };
 
-      const clearPage = () => {
+      const clearNumberContainers = () => {
         const numberContainer = getNumberContainer();
-        [...numberContainer.children].forEach((child) =>
+        Array.from(numberContainer.children).forEach((child) =>
           numberContainer.removeChild(child)
         );
       };
@@ -63,7 +74,7 @@
 
       const displayNumbers = (numbers) => {
         const { pivot, greater, lesser } = numbers;
-        clearPage();
+        clearNumberContainers();
         displayNumberGroup(`Numbers <= ${pivot}:`, sortAscending(lesser));
         displayNumberGroup(`Numbers > ${pivot}:`, sortAscending(greater));
       };
