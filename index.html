@@ -10,10 +10,10 @@
       const isInvalid = (number) =>
         typeof number !== 'number' || isNaN(number) || number === null;
 
-      const createNumberElement = (number) => {
+      const createNumberNode = (number) => {
         const numberNode = document.createElement('li');
         numberNode.innerText = number;
-        return { value: number, node: numberNode };
+        return numberNode;
       };
 
       const getNumberContainer = () => document.querySelector('#numbers');
@@ -24,41 +24,37 @@
         }, timeout);
       };
 
-      const highlightMax = (max) => {
-        max.node.classList.add('highlight');
-      };
-
-      const getElementOfMaxValue = (a, b) => (a.value > b.value ? a : b);
-
-      const collectAndDisplayNumbers = (remainingCount, onComplete, maxNum) => {
+      const collectAndDisplayNumbers = (remainingCount, onReadNumber) => {
         if (remainingCount <= 0) {
-          onComplete(maxNum);
           return;
         }
 
         readNumber('Enter a number', (number) => {
           if (isInvalid(number)) return;
-
-          const numbersContainer = getNumberContainer();
-          const current = createNumberElement(number);
-          const nextMax = getElementOfMaxValue(current, maxNum);
-          numbersContainer.appendChild(current.node);
-
-          collectAndDisplayNumbers(remainingCount - 1, onComplete, nextMax);
+          onReadNumber(number);
+          collectAndDisplayNumbers(remainingCount - 1, onReadNumber);
         });
       };
 
+      const onNumber = (number) => {
+        const pivotNumber = 5;
+        const isGreater = number > 5;
+        const msg = isGreater ? ' is greater' : ' is lesser';
+        const numbersContainer = getNumberContainer();
+        const numberNode = createNumberNode(number + msg);
+        numbersContainer.appendChild(numberNode);
+      };
+
       window.onload = () => {
-        const initialMax = createNumberElement(-Infinity);
         const numbersCount = 3;
-        collectAndDisplayNumbers(numbersCount, highlightMax, initialMax);
+        collectAndDisplayNumbers(numbersCount, onNumber);
       };
     </script>
   </head>
   <body>
     <main>
       <h2>Numbers</h2>
-      <ul id="numbers"></ul>
+      <div id="numbers"></div>
     </main>
   </body>
 </html>
